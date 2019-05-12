@@ -171,31 +171,58 @@ public:
 
 	bool First();
 	bool Read(const char* strSrc, const char* strName);
-	
+
+	bool isOpen()
+	{
+		return m_bOpen;
+	}
+	bool setOpen()
+	{
+		return m_bOpen = true;
+	}
+	bool isReconized()
+	{
+		return m_bReconized;
+	}
+
 	bool Do();
 	
-	bool DoMiddle();
+	bool DoReference();
 	
 	bool HardInit()
 	{
 		m_margin.SetRectEmpty();
+		//m_dib.....
+		m_I.Initial();
 
 		m_bOpen = false;
+		m_bReconized = false;
+		bReference = false;
 		
 		m_nRowLenght = -1;
-
-		//delete[] m_LineProj;
-		//delete[] m_ColProj;
-		//m_LineProj = NULL;
-		//m_ColProj = NULL;
 
 		CNTitle = CNKeyWords = CNAuthor =
 		CNCompany = CNJournal = NumJournalNo =
 		NumJournalDate = ENJournal = ENTitle =
 		ENKeyWords = ENAuthor = ENCompany =
-		Reference = DOI = ENAbstract = CNAbstract = "";
+		Reference = DOI = ENAbstract = CNAbstract =
 
-		bReference = false;
+		strFilePath = 
+		strFileName = 
+		strTempFilePath =  "";
+
+		m_CNTitleLine = 
+		m_CNKeyWordsLine =
+		m_CNAuthorLine =
+		m_CNAbstractLine =
+		m_CNKeyLine =
+		m_ENTitleLine =
+		m_ENKeyWordsLine =
+		m_ENAuthorLine =
+		m_ENAbstractLine =
+		m_ENKeyLine =
+		m_nHeaderLine =
+		m_nFooterLine = 0;
 		return true;
 	}
 	bool SoftInit()
@@ -216,21 +243,38 @@ public:
 	}
 	Analysis()
 	{ 
-		m_nRowLenght = -1;
-
 		m_margin.SetRectEmpty();
+		//m_dib.....
+		m_I.Initial();
 
 		m_bOpen = false;
-		//m_LineProj = NULL;
-		//m_ColProj = NULL;
-
-		CNTitle = CNKeyWords = CNAuthor = 
-		CNCompany = CNJournal = NumJournalNo = 
-		NumJournalDate = ENJournal = ENTitle = 
-		ENKeyWords = ENAuthor = ENCompany = 
-		Reference = DOI = ENAbstract = CNAbstract = "";
-
+		m_bReconized = false;
 		bReference = false;
+
+		m_nRowLenght = -1;
+
+		CNTitle = CNKeyWords = CNAuthor =
+			CNCompany = CNJournal = NumJournalNo =
+			NumJournalDate = ENJournal = ENTitle =
+			ENKeyWords = ENAuthor = ENCompany =
+			Reference = DOI = ENAbstract = CNAbstract =
+
+			strFilePath =
+			strFileName =
+			strTempFilePath = "";
+
+		m_CNTitleLine =
+			m_CNKeyWordsLine =
+			m_CNAuthorLine =
+			m_CNAbstractLine =
+			m_CNKeyLine =
+			m_ENTitleLine =
+			m_ENKeyWordsLine =
+			m_ENAuthorLine =
+			m_ENAbstractLine =
+			m_ENKeyLine =
+			m_nHeaderLine =
+			m_nFooterLine = 0;
 	}
 	~Analysis()
 	{
@@ -269,12 +313,11 @@ private:
 	CString strFilePath;
 	CString strFileName;
 	CString strTempFilePath;
-	bool m_bOpen;
 
-	////投影所用数组
-	//int* m_LineProj;
-	//int* m_ColProj;
+	bool m_bOpen;
 	
+	bool m_bReconized;
+
 	//为两行准备
 	int m_CNTitleLine;
 	int m_CNKeyWordsLine;

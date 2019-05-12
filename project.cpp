@@ -61,7 +61,7 @@ bool Analysis::Read(const char* strSrc , const char* strName)
 
 	First();
 
-	return true;
+	return m_bOpen = true;
 }
 
 //Ê×Ò³
@@ -76,11 +76,12 @@ bool Analysis::Do()
 	Header();
 
 	Title();
-	return true;
+
+	return m_bReconized = true;
 }
 
 //ÖÐ¼äÒ³
-bool Analysis::DoMiddle()
+bool Analysis::DoReference()
 {
 	if (!m_bOpen)
 	{
@@ -237,7 +238,7 @@ bool Analysis::DoMiddle()
 	fclose(pct);
 #endif // myTest
 
-	return true;
+	return m_bReconized = true;
 }
 
 

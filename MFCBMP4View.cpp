@@ -175,6 +175,9 @@ void CMFCBMP4View::OnFileOpen()//打开位图文件
 		OFN_OVERWRITEPROMPT, _T("位图文件(*.bmp)|*.bmp|PDF文件(*.pdf)|*.pdf|JPEG文件(*.jpg)|*.jpg||"));
 	if (dlg.DoModal() == IDOK)
 	{
+		bool wasOpen = m_analy.isOpen();
+		m_analy.HardInit();
+
 		m_strWorkDir  = dlg.GetPathName();
 		m_strFileName = dlg.GetFileName();
 		m_strFileType = dlg.GetFileExt().MakeLower();
@@ -184,10 +187,29 @@ void CMFCBMP4View::OnFileOpen()//打开位图文件
 		GetModuleFileName(0, a, 260);
 		m_strThisDir = a;
 		m_strThisDir = m_strThisDir.Left(m_strThisDir.Find("Debug"));
+
 		if (m_strFileType == "pdf")
 		{
+			if (wasOpen)//删除上次生成的文件
+			{
+				CString delFilePath;
+				for (int i = 1; ; i++)
+				{
+					delFilePath.Format("data//%d.bmp", i);
+					if (_access(delFilePath, 0) != -1)
+					{
+						_unlink(delFilePath);
+					}
+					else
+					{
+						break;
+					}
+				}
+			}
+
 			//转化为bmp文件
 			PDF2Pic(m_strWorkDir, m_strFileName, m_nFileCt);
+			m_analy.setOpen();
 			Invalidate();
 		}
 		else//if(m_strFileType == "bmp" || m_strFileType == "jpg")
@@ -199,8 +221,6 @@ void CMFCBMP4View::OnFileOpen()//打开位图文件
 			}
 			if (image.Load(dlg.GetPathName()) == S_OK)
 			{
-				//HDC a
-				//image.StretchBlt()
 				Invalidate();
 				if (m_strWorkDir.IsEmpty()) { return; }
 				if (!m_analy.Read(m_strWorkDir, m_strFileName))
@@ -212,6 +232,8 @@ void CMFCBMP4View::OnFileOpen()//打开位图文件
 		}
 	}
 	
+
+
 
 
 #elif 0  //测试OCR与CUT结果
@@ -351,65 +373,81 @@ void CMFCBMP4View::OnRecognize()
 	}
 	AfxMessageBox("done!");
 #elif 1
-	if (m_strFileType.MakeLower() == "pdf")
+	if (!m_analy.isOpen())
 	{
-		CString tempIndex;
-		tempIndex.Format("data\\%d.bmp", 1);
-		m_analy.Read(m_strThisDir + tempIndex, tempIndex);
-		m_analy.Do();
+		AfxMessageBox("未打开图片");
+		return;
+	}
+	else if (m_analy.isReconized())
+	{
 		MFCBMP4dlg dlg;
 		dlg.setData(m_analy);
-		//dlg.DoModal();
-
-		int cur = -1;
-		for (cur = m_nFileCt; cur > 1; cur--)
+		dlg.DoModal();
+		return;
+	}
+	else//open but unReconized
+	{
+		if (m_strFileType.MakeLower() == "pdf")
 		{
-			m_analy.SoftInit();
-			tempIndex.Format("data\\%d.bmp", cur);
+			CString tempIndex;
+			tempIndex.Format("data\\%d.bmp", 1);
 			m_analy.Read(m_strThisDir + tempIndex, tempIndex);
-			m_analy.DoMiddle();
-
-			dlg.addData(m_analy);
+			m_analy.Do();
+			MFCBMP4dlg dlg;
+			dlg.setData(m_analy);
 			//dlg.DoModal();
 
-			if (m_analy.bReference)
-				break;
-		}
-		if (cur != 1)
-		{
-			for (cur++; cur <= m_nFileCt; cur++)
+			int cur = -1;
+			for (cur = m_nFileCt; cur > 1; cur--)
 			{
 				m_analy.SoftInit();
 				tempIndex.Format("data\\%d.bmp", cur);
 				m_analy.Read(m_strThisDir + tempIndex, tempIndex);
-				m_analy.DoMiddle();
+				m_analy.DoReference();
 
 				dlg.addData(m_analy);
 				//dlg.DoModal();
+
+				if (m_analy.bReference)
+					break;
+			}
+			if (cur != 1)
+			{
+				for (cur++; cur <= m_nFileCt; cur++)
+				{
+					m_analy.SoftInit();
+					tempIndex.Format("data\\%d.bmp", cur);
+					m_analy.Read(m_strThisDir + tempIndex, tempIndex);
+					m_analy.DoReference();
+
+					dlg.addData(m_analy);
+					//dlg.DoModal();
+				}
+			}
+			dlg.DoModal();
+
+			dlg.saveData();
+		}
+		else if (m_strFileType.MakeLower() == "bmp")
+		{
+			SelectContentDlg sc;
+			sc.DoModal();
+			if (sc.getSelIndex())
+			{
+				m_analy.Do();
+				MFCBMP4dlg dlg;
+				dlg.setData(m_analy);
+				dlg.DoModal();
+			}
+			else
+			{
+				m_analy.DoReference();
+				MFCBMP4dlg dlg;
+				dlg.setData(m_analy);
+				dlg.DoModal();
 			}
 		}
-		dlg.DoModal();
 
-		dlg.saveData();
-	}
-	else if (m_strFileType.MakeLower() == "bmp")
-	{
-		SelectContentDlg sc;
-		sc.DoModal();
-		if (sc.getSelIndex())
-		{
-			m_analy.Do();
-			MFCBMP4dlg dlg;
-			dlg.setData(m_analy);
-			dlg.DoModal();
-		}
-		else
-		{
-			m_analy.DoMiddle();
-			MFCBMP4dlg dlg;
-			dlg.setData(m_analy);
-			dlg.DoModal();
-		}
 	}
 #elif 0
 	// TODO: 在此添加命令处理程序代码
