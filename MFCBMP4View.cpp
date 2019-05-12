@@ -73,9 +73,7 @@ void CMFCBMP4View::OnDraw(CDC* pDC)
 	// TODO: 在此处为本机数据添加绘制代码
 	if (m_nFileCt >= 0 && m_strFileType == "pdf") // 多图模式;
 	{
-		CString tempBMP = m_strWorkDir;
-		tempBMP.Replace(m_strFileName, "temp\\");
-		CString tempIndex;
+		CString FilePath;
 
 		CRect   thisWindow;
 		//GetWindowRect(&thisWindow);//得到所处窗口的绝对坐标;    
@@ -86,9 +84,9 @@ void CMFCBMP4View::OnDraw(CDC* pDC)
 		const int singleHeight = (int)thisWindow.Height() / 0.9;
 		for (int i = 1; i <= m_nFileCt; i++)
 		{
-			tempIndex.Format("%d.bmp", i);
+			FilePath.Format("data\\%d.bmp", i);
 			CImage tempDraw;
-			tempDraw.Load(tempBMP + tempIndex);
+			tempDraw.Load(FilePath);
 			tempDraw.Draw(pDC->GetSafeHdc(), x, y, singleWidth, singleHeight);
 			x += singleWidth;
 			if (x >= 3 * singleWidth) // 每行三张图
@@ -172,6 +170,7 @@ void CMFCBMP4View::OnFileOpen()//打开位图文件
 	// TODO: 在此添加命令处理程序代码
 #if 1
 	//m_analy.InitMyAnaly();  //失败
+
 	CFileDialog dlg(TRUE, _T(".bmp"), _T("*.bmp"), OFN_HIDEREADONLY |
 		OFN_OVERWRITEPROMPT, _T("位图文件(*.bmp)|*.bmp|PDF文件(*.pdf)|*.pdf|JPEG文件(*.jpg)|*.jpg||"));
 	if (dlg.DoModal() == IDOK)
@@ -180,6 +179,11 @@ void CMFCBMP4View::OnFileOpen()//打开位图文件
 		m_strFileName = dlg.GetFileName();
 		m_strFileType = dlg.GetFileExt().MakeLower();
 
+		m_strThisDir;
+		char a[260];
+		GetModuleFileName(0, a, 260);
+		m_strThisDir = a;
+		m_strThisDir = m_strThisDir.Left(m_strThisDir.Find("Debug"));
 		if (m_strFileType == "pdf")
 		{
 			//转化为bmp文件
@@ -349,11 +353,9 @@ void CMFCBMP4View::OnRecognize()
 #elif 1
 	if (m_strFileType.MakeLower() == "pdf")
 	{
-		CString tempBMP = m_strWorkDir;
-		tempBMP.Replace(m_strFileName, "temp\\");
 		CString tempIndex;
-		tempIndex.Format("%d.bmp", 1);
-		m_analy.Read(tempBMP + tempIndex, tempIndex);
+		tempIndex.Format("data\\%d.bmp", 1);
+		m_analy.Read(m_strThisDir + tempIndex, tempIndex);
 		m_analy.Do();
 		MFCBMP4dlg dlg;
 		dlg.setData(m_analy);
@@ -363,8 +365,8 @@ void CMFCBMP4View::OnRecognize()
 		for (cur = m_nFileCt; cur > 1; cur--)
 		{
 			m_analy.SoftInit();
-			tempIndex.Format("%d.bmp", cur);
-			m_analy.Read(tempBMP + tempIndex, tempIndex);
+			tempIndex.Format("data\\%d.bmp", cur);
+			m_analy.Read(m_strThisDir + tempIndex, tempIndex);
 			m_analy.DoMiddle();
 
 			dlg.addData(m_analy);
@@ -378,8 +380,8 @@ void CMFCBMP4View::OnRecognize()
 			for (cur++; cur <= m_nFileCt; cur++)
 			{
 				m_analy.SoftInit();
-				tempIndex.Format("%d.bmp", cur);
-				m_analy.Read(tempBMP + tempIndex, tempIndex);
+				tempIndex.Format("data\\%d.bmp", cur);
+				m_analy.Read(m_strThisDir + tempIndex, tempIndex);
 				m_analy.DoMiddle();
 
 				dlg.addData(m_analy);

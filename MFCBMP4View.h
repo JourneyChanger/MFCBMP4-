@@ -45,7 +45,7 @@ protected:
 	CString m_strWorkDir;
 	CString m_strFileName;
 	CString m_strFileType;
-
+	CString m_strThisDir;
 	int m_nFileCt;
 	Analysis m_analy;
 	//bool bMutiDisplay;
