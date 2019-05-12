@@ -69,5 +69,4 @@ int SelectContentDlg::getSelIndex()
 {
 	// TODO: 在此处添加实现代码.
 	return m_nIndex;
-	return 0;
 }

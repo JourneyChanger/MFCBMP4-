@@ -70,49 +70,45 @@ void getSearchingTextDlg::OnBnClickedOk()
 	{
 		a = read("title", ct, TextCaption);
 	}
-	if (a > 0 && !TextAuthor.Trim().IsEmpty())
+	if (!TextAuthor.Trim().IsEmpty())
 	{
 		b = read("author", ct, TextAuthor);
-		a = (a == b ? a : -1);
+		a = (a == b ? a : 0);
 	}
-	if (a > 0 && !TextDOI.Trim().IsEmpty())
+	if (!TextDOI.Trim().IsEmpty())
 	{
 		b = read("DOI", ct, TextDOI);
-		a = (a == b ? a : -1);
+		a = (a == b ? a : 0);
 	}
-	if (a > 0 && !TextJournal.Trim().IsEmpty())
+	if (!TextJournal.Trim().IsEmpty())
 	{
 		b = read("name", ct, TextJournal);
-		a = (a == b ? a : -1);
+		a = (a == b ? a : 0);
 	}
-	if (a > 0 && !TextKey.Trim().IsEmpty())
+	if (!TextKey.Trim().IsEmpty())
 	{
 		b = read("key", ct, TextKey);
-		a = (a == b ? a : -1);
+		a = (a == b ? a : 0);
 	}
 
 	if (a > 0)
 	{
-		int b = read("title", ct, TextCaption);
-		////
-		//CString str;
-		//str.Format("%d", a);
-		//AfxMessageBox(str);
-		////
-	
 		AfxMessageBox("检索成功");
+
 		MFCBMP4dlg dlg;
 		dlg.pull(a);
 		dlg.DoModal();
 		return;
 	}
-	
-	AfxMessageBox("未找到!");
+	else
+	{
+		AfxMessageBox("未找到!");
+	}
 }
 int getSearchingTextDlg::read(CString filename,int ct, CString& str)
 {
 	FILE* p = fopen("data\\index_" + filename + ".txt", "r");
-	if (!p) return -2;
+	if (!p) return -1;
 	
 	char a[5000];
 	CString temp;
@@ -125,5 +121,5 @@ int getSearchingTextDlg::read(CString filename,int ct, CString& str)
 	}
 
 	fclose(p);
-	return -1;
+	return 0;
 }
