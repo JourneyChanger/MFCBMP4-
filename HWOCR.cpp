@@ -49,7 +49,16 @@ BOOL CHWOCR::Initialize(HWND hWnd)
 	strcpy_s(szBuf, 256, "E:\\Bin - 2");
 	strcpy_s(szBuf, 256, "E:\\Develop\\IntelliReader(F2)\\Bin - 2");
 
-	strcpy_s(szBuf, 256, "D:\\Desktop\\位图\\Bin - 2");
+	CString m_strThisDir;
+	char a[260];
+	GetModuleFileName(0, a, 260);
+	m_strThisDir = a;
+	m_strThisDir = m_strThisDir.Left(m_strThisDir.Find("Debug"));
+	m_strThisDir += "Bin - 2";
+
+	strcpy_s(szBuf, 256, m_strThisDir);
+
+//  strcpy_s(szBuf, 256, "D:\\Desktop\\位图\\Bin - 2");
 //	strcpy_s(szBuf, 256, "E:\\0-教学\\项目训练\\Bin - 2");
 //	strcpy_s(szBuf, 256, "G:\\Develop\\Bin - 2");
 //	strcpy_s(szBuf, 256, "E:\\项目\\JournalData安装\\Bin");
