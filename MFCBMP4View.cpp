@@ -171,7 +171,6 @@ void CMFCBMP4View::OnFileOpen()//打开位图文件
 {
 	// TODO: 在此添加命令处理程序代码
 #if 1
-
 	//m_analy.InitMyAnaly();  //失败
 	CFileDialog dlg(TRUE, _T(".bmp"), _T("*.bmp"), OFN_HIDEREADONLY |
 		OFN_OVERWRITEPROMPT, _T("位图文件(*.bmp)|*.bmp|PDF文件(*.pdf)|*.pdf|JPEG文件(*.jpg)|*.jpg||"));
