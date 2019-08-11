@@ -261,21 +261,21 @@ int PDF2Pic(CString pos, CString name, int& nCt)
 
 	//char szPDFName[260];
 	char* szPDFName = pos.GetBuffer();
-	char szOutDir[260];
-	char* szName = name.GetBuffer();
+	char szOutDir[] = "data\\";
+	//char* szName = name.GetBuffer();
 	//char szName[260];
 	//char szType[10];
 
 	//memset(szPDFName, 0, sizeof(char)*260);
-	memset(szOutDir, 0, sizeof(char)*260);
+	//memset(szOutDir, 0, sizeof(char)*260);
 	//memset(szType, 0, sizeof(char)*10);
 	//memset(szName, 0, sizeof(char)*10);
 
 	//TcharToChar(pos, szPDFName);
 	//TcharToChar(name, szName);
-	szPDFName = pos.GetBuffer();
-	strcpy(szOutDir, szPDFName);
-	strcpy(strstr(szOutDir, szName),"temp\\");
+	//szPDFName = pos.GetBuffer();
+	//strcpy(szOutDir, szPDFName);
+	//strcpy(strstr(szOutDir, szName),"temp\\");
 
 
 						//TcharToChar(argv[2], szType);

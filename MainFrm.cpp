@@ -11,6 +11,7 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+#include <io.h>
 
 // CMainFrame
 
@@ -96,3 +97,25 @@ void CMainFrame::Dump(CDumpContext& dc) const
 
 // CMainFrame 消息处理程序
 
+
+
+BOOL CMainFrame::DestroyWindow()
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	CString delFilePath;
+
+	for (int i = 1; ; i++)
+	{
+		delFilePath.Format("data//%d.bmp", i);
+		if (_access(delFilePath, 0) != -1)
+		{
+			_unlink(delFilePath);
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	return CFrameWnd::DestroyWindow();
+}
